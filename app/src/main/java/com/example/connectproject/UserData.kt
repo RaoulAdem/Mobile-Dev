@@ -1,7 +1,11 @@
 package com.example.connectproject
 
 data class UserData (
-    val userId: String,
+    val firstName: String,
+    val lastName: String,
     val email: String,
-    val age: String
-)
+    val password: String,
+    val age: Int,
+    val teacher: Boolean,
+    val phone: Int
+) {}

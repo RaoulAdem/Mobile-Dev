@@ -3,7 +3,6 @@ package com.example.connectproject
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.connectproject.databinding.ActivityLoginBinding
 import com.example.connectproject.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 

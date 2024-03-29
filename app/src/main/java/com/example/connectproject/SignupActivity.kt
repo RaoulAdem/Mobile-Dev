@@ -5,23 +5,28 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import com.example.connectproject.databinding.ActivitySignupBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.database
+import com.google.firebase.Firebase
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var dbRef: DatabaseReference
+    private lateinit var database: DatabaseReference
 
+    private lateinit var signupFirstname: EditText
+    private lateinit var signupLastname: EditText
     private lateinit var signupEmail: EditText
     private lateinit var signupPassword: EditText
     private lateinit var signupAge: EditText
+    private lateinit var signupTeacher: ToggleButton
+    private lateinit var signupPhone: EditText
+
+    private var teacher: Boolean = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +34,27 @@ class SignupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-        dbRef = FirebaseDatabase.getInstance().getReference("users")
+        database = Firebase.database.reference
 
+        signupFirstname = findViewById(R.id.signupFirstname)
+        signupLastname = findViewById(R.id.signupLastname)
         signupEmail = findViewById(R.id.signupEmail)
         signupPassword = findViewById(R.id.signupPassword)
         signupAge = findViewById(R.id.signupAge)
+        signupTeacher = findViewById(R.id.signupTeacher)
+        signupPhone = findViewById(R.id.signupPhone)
 
         binding.signupButton.setOnClickListener {
+            val firstname = signupFirstname.text.toString()
+            val lastname = signupLastname.text.toString()
             val email = signupEmail.text.toString()
             val password = signupPassword.text.toString()
             val ageText = signupAge.text.toString()
-            if (validateForm(email, password, ageText)) {
+            val phoneText = signupPhone.text.toString()
+            if (validateForm(firstname, lastname, email, password, ageText, phoneText)) {
                 val age = ageText.toInt()
-                saveUserData(email, password, age)
+                val phone = phoneText.toInt()
+                saveUserData(firstname, lastname, email, password, age, phone)
             }
         }
 
@@ -51,8 +64,24 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateForm(email: String, password: String, ageText: String): Boolean {
+    private fun validateForm(firstname: String, lastname: String, email: String, password: String, ageText: String, phoneText: String): Boolean {
         var valid = true
+        if (firstname.isEmpty()) {
+            signupFirstname.error = "Please enter firstname"
+            valid = false
+        } else if (firstname.length<3) {
+            signupFirstname.error = "Invalid firstname format"
+            valid = false
+        }
+
+        if (lastname.isEmpty()) {
+            signupLastname.error = "Please enter lastname"
+            valid = false
+        } else if (lastname.length<3) {
+            signupLastname.error = "Invalid lastname format"
+            valid = false
+        }
+
         if (email.isEmpty()) {
             signupEmail.error = "Please enter email"
             valid = false
@@ -84,46 +113,38 @@ class SignupActivity : AppCompatActivity() {
                 valid = false
             }
         }
+
+        if (phoneText.isEmpty()) {
+            signupPhone.error = "Please enter phone number"
+            valid = false
+        } else if (phoneText.length!=8){
+            signupPhone.error = "Phone number must be 8 digits"
+            valid = false
+        }
         return valid
     }
 
-    private fun saveUserData(email: String, password: String, age: Int) {
+    private fun saveUserData(firstname: String, lastname: String, email: String, password: String, age: Int, phone: Int) {
+        teacher = signupTeacher.isChecked
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = task.result?.user
-                    if (user != null) {
-                        val userId = email.replace(".","")
-                        val userData = UserData(userId, email, age.toString())
-                        dbRef.child(userId).setValue(userData).addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                Toast.makeText(
-                                    this,
-                                    "Data inserted and user created successfully.",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                val intent = Intent(this, LoginActivity::class.java)
-                                startActivity(intent)
-                            } else {
-                                Log.e("SignupActivity", "Error inserting data:", it.exception)
-                                Toast.makeText(
-                                    this,
-                                    "Error saving user data: ${it.exception}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    } else {
-                        Log.e("SignupActivity", "Error: Could not get current user ID")
-                        Toast.makeText(this, "Signup failed.", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Log.w(
-                        "SignupActivity",
-                        "createUserWithEmailAndPassword failed.",
-                        task.exception
+            .addOnCompleteListener {
+                if (it.isSuccessful) {  // Check for successful task completion
+                    val userMap = UserData(
+                        firstName = firstname,
+                        lastName = lastname,
+                        email = email,
+                        password = password,
+                        age = age,
+                        teacher = teacher,
+                        phone = phone
                     )
-                    Toast.makeText(this, "Signup failed.", Toast.LENGTH_SHORT).show()
+                    database.child("users").push().setValue(userMap)
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+
+                } else {
+                    // Handle unsuccessful authentication (exception handling)
+                    Log.e("saveUserData", "Error creating user", it.exception)
                 }
             }
     }
