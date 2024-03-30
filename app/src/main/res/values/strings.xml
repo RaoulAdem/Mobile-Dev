@@ -8,4 +8,9 @@
     <string name="phone">Phone</string>
     <string name="login">Login</string>
     <string name="signup">Sign up</string>
+    <string name="logoutButton">Logout</string>
+    <string name="change_mail">Change Mail</string>
+    <string name="change_password">Change Password</string>
+    <string name="schedule">Schedule</string>
+    <string name="change_phone">Change Number</string>
 </resources>

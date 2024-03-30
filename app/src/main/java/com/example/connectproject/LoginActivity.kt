@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
             if (loginUsername.isNotEmpty() && loginPassword.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(loginUsername, loginPassword).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, ProfileActivity::class.java)
                         startActivity(intent)
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if(firebaseAuth.currentUser != null){
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
     }
