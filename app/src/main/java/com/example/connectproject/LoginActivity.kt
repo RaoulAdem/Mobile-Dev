@@ -1,6 +1,8 @@
 package com.example.connectproject
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -8,23 +10,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.connectproject.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
-import com.google.firebase.Firebase
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Base_Theme_ConnectProject)
         super.onCreate(savedInstanceState)
         //for loading app
-        Thread.sleep(2000) //2s
         installSplashScreen()
         //
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //initialize firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
         //when clicking the login button
         binding.loginButton.setOnClickListener {
@@ -58,5 +59,16 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //restore the state
+        val isDarkModeEnabled = sharedPreferences.getBoolean("DarkMode", false)
+//        if(isDarkModeEnabled) {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//        } else {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//        }
     }
 }

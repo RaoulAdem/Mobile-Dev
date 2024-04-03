@@ -4,14 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
-import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import com.example.connectproject.databinding.ActivitySignupBinding
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
-import com.google.firebase.Firebase
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
@@ -49,11 +48,9 @@ class SignupActivity : AppCompatActivity() {
             val lastname = signupLastname.text.toString()
             val email = signupEmail.text.toString()
             val password = signupPassword.text.toString()
-            val ageText = signupAge.text.toString()
-            val phoneText = signupPhone.text.toString()
-            if (validateForm(firstname, lastname, email, password, ageText, phoneText)) {
-                val age = ageText.toInt()
-                val phone = phoneText.toInt()
+            val age = signupAge.text.toString()
+            val phone = signupPhone.text.toString()
+            if (validateForm(firstname, lastname, email, password, age, phone)) {
                 saveUserData(firstname, lastname, email, password, age, phone)
             }
         }
@@ -64,7 +61,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateForm(firstname: String, lastname: String, email: String, password: String, ageText: String, phoneText: String): Boolean {
+    private fun validateForm(firstname: String, lastname: String, email: String, password: String, age: String, phone: String): Boolean {
         var valid = true
         if (firstname.isEmpty()) {
             signupFirstname.error = "Please enter firstname"
@@ -95,12 +92,12 @@ class SignupActivity : AppCompatActivity() {
             valid = false
         }
 
-        if (ageText.isEmpty()) {
+        if (age.isEmpty()) {
             signupAge.error = "Please enter age"
             valid = false
         } else {
             try {
-                val age = ageText.toInt()
+                val age = age.toInt()
                 if (age <= 0) {
                     signupAge.error = "Age must be greater than 0"
                     valid = false
@@ -114,17 +111,18 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        if (phoneText.isEmpty()) {
+        if (phone.isEmpty()) {
             signupPhone.error = "Please enter phone number"
             valid = false
-        } else if (phoneText.length!=8){
+        } else if (phone.length!=8){
             signupPhone.error = "Phone number must be 8 digits"
             valid = false
         }
         return valid
     }
 
-    private fun saveUserData(firstname: String, lastname: String, email: String, password: String, age: Int, phone: Int) {
+    //add toast messages
+    private fun saveUserData(firstname: String, lastname: String, email: String, password: String, age: String, phone: String) {
         teacher = signupTeacher.isChecked
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -136,9 +134,11 @@ class SignupActivity : AppCompatActivity() {
                         password = password,
                         age = age,
                         teacher = teacher,
-                        phone = phone
+                        phone = phone,
+                        beListed = false
                     )
-                    database.child("users").push().setValue(userMap)
+                    val currentUser = FirebaseAuth.getInstance().currentUser
+                    database.child("users").child(currentUser?.uid ?: "").setValue(userMap)
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
 
