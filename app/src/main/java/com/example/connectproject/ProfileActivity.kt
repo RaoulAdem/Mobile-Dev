@@ -371,24 +371,57 @@ class ProfileActivity : AppCompatActivity() {
             val selectedTitle = adapter.getGroup(groupPosition) as String
             val selectedChild = adapter.getChild(groupPosition, childPosition) as String
             val userRef = database.child("users").child(currentUser?.uid ?: "")
-            userRef.get().addOnSuccessListener { dataSnapshot ->
-                favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
-                favorites.remove(selectedTitle)
-                userRef.child("favorites").setValue(favorites).addOnSuccessListener {
-                    Toast.makeText(
-                        applicationContext,
-                        "Removed from favorites: $selectedTitle",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
-                    val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
-                    val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
-                    database.child("favorites").child(fullName).setValue(favorites)
+            if (selectedChild == "Remove from favorites") {
+                userRef.get().addOnSuccessListener { dataSnapshot ->
+                    favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+                    favorites.remove(selectedTitle)
+                    userRef.child("favorites").setValue(favorites).addOnSuccessListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "Removed from favorites: $selectedTitle",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
+                        val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
+                        val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
+                        database.child("favorites").child(fullName).setValue(favorites)
+                    }.addOnFailureListener {
+                        Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                    }
                 }.addOnFailureListener {
-                    Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener {
-                Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
+            } else {
+                val view = LayoutInflater.from(this).inflate(R.layout.dialog_do_actions, null)
+                val buttonCall = view.findViewById<Button>(R.id.buttonCall)
+                val buttonEmail = view.findViewById<Button>(R.id.buttonCall)
+                val removeFavorites = view.findViewById<Button>(R.id.removeFavorites)
+                val builder = AlertDialog.Builder(this)
+                builder.setView(view)
+                val dialog = builder.create()
+                dialog.show()
+                removeFavorites.setOnClickListener {
+                    userRef.get().addOnSuccessListener { dataSnapshot ->
+                        favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+                        favorites.remove(selectedTitle)
+                        userRef.child("favorites").setValue(favorites).addOnSuccessListener {
+                            Toast.makeText(
+                                applicationContext,
+                                "Removed from favorites: $selectedTitle",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
+                            val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
+                            val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
+                            database.child("favorites").child(fullName).setValue(favorites)
+                            dialog.dismiss()
+                        }.addOnFailureListener {
+                            Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener {
+                        Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             true
         }
