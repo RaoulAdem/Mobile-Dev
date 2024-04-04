@@ -104,8 +104,7 @@ class ProfileActivity : AppCompatActivity() {
             database.child("users").child(user.uid)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val firstName =
-                            dataSnapshot.child("firstName").value.toString().capitalize()
+                        val firstName = dataSnapshot.child("firstName").value.toString().capitalize()
                         val lastName = dataSnapshot.child("lastName").value.toString().uppercase()
                         val fullName = "$firstName $lastName"
                         binding.profileInfo.text = "Welcome back, $fullName!"
@@ -325,29 +324,40 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        val expandableListView = binding.expandableListView
         //list users
-        database.child("users").child(currentUser!!.uid).child("favorites").addValueEventListener(object : ValueEventListener {
+        val expandableListView = binding.expandableListView
+        database.child("users").child(currentUser!!.uid).child("favorites").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val titles = mutableListOf<String>()
                     val listData = HashMap<String, List<String>>()
-                    val userFavorites = mutableListOf<Pair<String,String>>() //uid & fullname
+                    val userFavorites = mutableListOf<Pair<String,String>>()
                     for (favoriteSnapshot in dataSnapshot.children) {
                         val fullnameFavorites = favoriteSnapshot.getValue<String>() ?: ""
-                        val uidFavorites = fullnameFavorites
-                        userFavorites.add(Pair(uidFavorites,fullnameFavorites))
+                        val nbrFavorites = favoriteSnapshot.key ?: ""
+                        userFavorites.add(Pair(nbrFavorites, fullnameFavorites))
                     }
-                    for ((uidFavorites,fullnameFavorites) in userFavorites) {
-                        titles.add(fullnameFavorites)
-                        listData[fullnameFavorites] = listOf("""
-                            (Still has not been accepted)
-                            Remove from favorites
-                            $uidFavorites
-                        """.trimIndent())
+                    userFavorites.forEach { (nbrFavorites, fullnameFavorites) ->
+                        val favoriteRef = database.child("favorites").child(fullnameFavorites)
+                        favoriteRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(favoriteSnapshot: DataSnapshot) {
+                                if (favoriteSnapshot.exists()) {
+                                    titles.add(fullnameFavorites)
+                                    listData[fullnameFavorites] = listOf("Do actions")
+                                } else {
+                                    titles.add(fullnameFavorites)
+                                    listData[fullnameFavorites] = listOf("Remove from favorites")
+                                }
+                                if (titles.size == userFavorites.size) {
+                                    adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userFavorites.map{it.first}, storageReference)
+                                    expandableListView.setAdapter(adapter)
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(this@ProfileActivity, "Error fetching favorites!", Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
-                    adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userFavorites.map{it.first}, storageReference)
-                    expandableListView.setAdapter(adapter)
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -356,19 +366,27 @@ class ProfileActivity : AppCompatActivity() {
         })
 
         //when we click
+        var favorites: MutableList<String>
         expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
             val selectedTitle = adapter.getGroup(groupPosition) as String
             val selectedChild = adapter.getChild(groupPosition, childPosition) as String
             val userRef = database.child("users").child(currentUser?.uid ?: "")
             userRef.get().addOnSuccessListener { dataSnapshot ->
-                val favorites: MutableList<String> = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+                favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
                 favorites.remove(selectedTitle)
-                userRef.child("favorites").setValue(favorites)
-                Toast.makeText(
-                    applicationContext,
-                    "Removed from favorites: $selectedTitle",
-                    Toast.LENGTH_SHORT
-                ).show()
+                userRef.child("favorites").setValue(favorites).addOnSuccessListener {
+                    Toast.makeText(
+                        applicationContext,
+                        "Removed from favorites: $selectedTitle",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
+                    val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
+                    val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
+                    database.child("favorites").child(fullName).setValue(favorites)
+                }.addOnFailureListener {
+                    Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                }
             }.addOnFailureListener {
                 Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
             }
