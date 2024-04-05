@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="my_light_primary">#999999</color>
+    <color name="my_light_primary">#686868</color>
     <color name="my_dark_primary">#292929</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#9E9E9E</color>
     <color name="black_gray">#5b5b5b</color>
     <color name="black">#FF000000</color>
     <color name="yellow">#FFFC00</color>

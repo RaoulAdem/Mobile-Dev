@@ -155,18 +155,18 @@ class ProfileActivity : AppCompatActivity() {
                     EmailAuthProvider.getCredential(currentUser?.email!!, pass)
                 currentUser.reauthenticate(authCredential)
                     .addOnSuccessListener {
-                        currentUser.updateEmail(newe)
+                        currentUser.verifyBeforeUpdateEmail(newe)
                             .addOnSuccessListener {
                                 ref.setValue(newe)
                                 dialog.dismiss()
                                 Toast.makeText(
                                     this@ProfileActivity,
-                                    "Changed Password",
+                                    "Changed Mail",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(this@ProfileActivity, "Failedee", Toast.LENGTH_LONG)
+                                Toast.makeText(this@ProfileActivity, "Failed", Toast.LENGTH_LONG)
                                     .show()
                             }
                     }
@@ -331,27 +331,34 @@ class ProfileActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     val titles = mutableListOf<String>()
                     val listData = HashMap<String, List<String>>()
+                    val userUids = mutableListOf<String>()
                     val userFavorites = mutableListOf<Pair<String,String>>()
                     for (favoriteSnapshot in dataSnapshot.children) {
                         val fullnameFavorites = favoriteSnapshot.getValue<String>() ?: ""
-                        val nbrFavorites = favoriteSnapshot.key ?: ""
+                        val nbrFavorites = favoriteSnapshot.key!!
                         userFavorites.add(Pair(nbrFavorites, fullnameFavorites))
+                        database.child(fullnameFavorites).addListenerForSingleValueEvent(object : ValueEventListener {
+                                 override fun onDataChange(uidSnapshot: DataSnapshot) {
+                                     val uid = uidSnapshot.getValue(String::class.java)
+                                     userUids.add(uid?:"")
+                                 }
+                                 override fun onCancelled(error: DatabaseError) {
+                                     Toast.makeText(this@ProfileActivity, "Error fetching UID!", Toast.LENGTH_SHORT).show()
+                                 }
+                             })
                     }
                     userFavorites.forEach { (nbrFavorites, fullnameFavorites) ->
                         val favoriteRef = database.child("favorites").child(fullnameFavorites)
                         favoriteRef.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(favoriteSnapshot: DataSnapshot) {
                                 if (favoriteSnapshot.exists()) {
-                                    titles.add(fullnameFavorites)
                                     listData[fullnameFavorites] = listOf("Do actions")
                                 } else {
-                                    titles.add(fullnameFavorites)
                                     listData[fullnameFavorites] = listOf("Remove from favorites")
                                 }
-                                if (titles.size == userFavorites.size) {
-                                    adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userFavorites.map{it.first}, storageReference)
-                                    expandableListView.setAdapter(adapter)
-                                }
+                                titles.add(fullnameFavorites)
+                                adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userUids, storageReference)
+                                expandableListView.setAdapter(adapter)
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 Toast.makeText(this@ProfileActivity, "Error fetching favorites!", Toast.LENGTH_SHORT).show()
@@ -371,6 +378,7 @@ class ProfileActivity : AppCompatActivity() {
             val selectedTitle = adapter.getGroup(groupPosition) as String
             val selectedChild = adapter.getChild(groupPosition, childPosition) as String
             val userRef = database.child("users").child(currentUser?.uid ?: "")
+            val uidRef = database.child(selectedTitle)
             if (selectedChild == "Remove from favorites") {
                 userRef.get().addOnSuccessListener { dataSnapshot ->
                     favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
@@ -394,7 +402,7 @@ class ProfileActivity : AppCompatActivity() {
             } else {
                 val view = LayoutInflater.from(this).inflate(R.layout.dialog_do_actions, null)
                 val buttonCall = view.findViewById<Button>(R.id.buttonCall)
-                val buttonEmail = view.findViewById<Button>(R.id.buttonCall)
+                val buttonEmail = view.findViewById<Button>(R.id.buttonEmail)
                 val removeFavorites = view.findViewById<Button>(R.id.removeFavorites)
                 val builder = AlertDialog.Builder(this)
                 builder.setView(view)
@@ -420,6 +428,33 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }.addOnFailureListener {
                         Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                buttonCall.setOnClickListener {
+                    uidRef.get().addOnSuccessListener { dataSnapshot ->
+                        val uid = dataSnapshot.getValue(String::class.java)
+                        val ref2 = database.child("users").child(uid?:"").child("phone")
+                        ref2.get().addOnSuccessListener { dataSnapshot2 ->
+                            val dial = dataSnapshot2.getValue(String::class.java)
+                            val dialIntent = Intent(Intent.ACTION_DIAL)
+                            dialIntent.data = Uri.parse("tel:" + dial)
+                            startActivity(dialIntent)
+                            dialog.dismiss()
+                        }
+                    }
+                }
+                buttonEmail.setOnClickListener {
+                    uidRef.get().addOnSuccessListener { dataSnapshot ->
+                        val uid = dataSnapshot.getValue(String::class.java)
+                        val ref2 = database.child("users").child(uid?:"").child("email")
+                        ref2.get().addOnSuccessListener { dataSnapshot2 ->
+                            val email = dataSnapshot2.getValue(String::class.java)
+                            val emailIntent = Intent(Intent.ACTION_SENDTO)
+                            emailIntent.data = Uri.parse("mailto:$email")
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Connect - I would like to meet you!")
+                            startActivity(emailIntent)
+                            dialog.dismiss()
+                        }
                     }
                 }
             }

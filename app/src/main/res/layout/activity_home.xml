@@ -72,7 +72,7 @@
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:background="@color/light_yellow"
+        android:background="@color/gray"
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +119,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/navigation">
+        app:menu="@menu/navigation"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

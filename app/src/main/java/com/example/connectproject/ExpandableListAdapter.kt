@@ -64,7 +64,7 @@ class ExpandableListAdapter(
 
         val groupImageView = convertView.findViewById<ImageView>(R.id.group_image)
         val userUid = userUids[groupPosition]
-        val imageRef = storageReference.child(userUid) // Use UID as reference
+        val imageRef = storageReference.child(userUid)
         imageRef.downloadUrl.addOnSuccessListener { imageUrl ->
             Glide.with(context)
                 .load(imageUrl)

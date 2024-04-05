@@ -139,6 +139,7 @@ class SignupActivity : AppCompatActivity() {
                     )
                     val currentUser = FirebaseAuth.getInstance().currentUser
                     database.child("users").child(currentUser?.uid ?: "").setValue(userMap)
+                    database.child(firstname.capitalize() + " " + lastname.uppercase()).setValue(currentUser?.uid ?: " ")
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
 

@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                             val fullName = "$firstname $lastname"
                             val useruid = userSnapshot.key ?: ""
                             userUids.add(useruid)
-                            val userOptions = listOf("Add to favorite [${if (isTeacher) "Teacher" else "Student"}]")
+                            val userOptions = listOf("Add to favorite")
                             val beDisplayed = userSnapshot.child("beDisplayed").getValue<Boolean>() ?: false
                             if (beDisplayed) {
                                 titles.add(fullName)
@@ -125,31 +125,27 @@ class MainActivity : AppCompatActivity() {
                     val firstName = dataSnapshot.child("firstName").getValue(String::class.java)?.capitalize() ?: ""
                     val lastName = dataSnapshot.child("lastName").getValue(String::class.java)?.uppercase() ?: ""
                     val fullName = "$firstName $lastName"
-                    if (selectedTitle == fullName) {
-                        Toast.makeText(applicationContext, "You can't add yourself", Toast.LENGTH_SHORT).show()
-                    } else {
-                        database.child("favorites").child(fullName).addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(favoritesSnapshot: DataSnapshot) {
-                                val favorites: MutableList<String> = favoritesSnapshot.getValue<List<String>>()?.toMutableList() ?: mutableListOf()
-                                if (favorites.contains(selectedTitle)) {
-                                    Toast.makeText(applicationContext, "$selectedTitle is already in your favorites", Toast.LENGTH_SHORT).show()
+                    database.child("favorites").child(fullName).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(favoritesSnapshot: DataSnapshot) {
+                            val favorites: MutableList<String> = favoritesSnapshot.getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+                            if (favorites.contains(selectedTitle)) {
+                                Toast.makeText(applicationContext, "$selectedTitle is already in your favorites", Toast.LENGTH_SHORT).show()
+                            } else {
+                                if (favorites.size == 3) {
+                                    Toast.makeText(applicationContext, "Your list of favorites is full (3 users)", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    if (favorites.size == 3) {
-                                        Toast.makeText(applicationContext, "Your list of favorites is full (3 users)", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        favorites.add(selectedTitle)
-                                        userRef.child("favorites").setValue(favorites)
-                                        database.child("favorites").child(fullName).setValue(favorites)
-                                        Toast.makeText(applicationContext, "Added to favorites: $selectedTitle", Toast.LENGTH_SHORT).show()
-                                    }
+                                    favorites.add(selectedTitle)
+                                    userRef.child("favorites").setValue(favorites)
+                                    database.child("favorites").child(fullName).setValue(favorites)
+                                    Toast.makeText(applicationContext, "Added to favorites: $selectedTitle", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                                // Handle database error
-                                Toast.makeText(applicationContext, "Error fetching favorites data", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                    }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Handle database error
+                            Toast.makeText(applicationContext, "Error fetching favorites data", Toast.LENGTH_SHORT).show()
+                        }
+                    })
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                     // Handle database error
