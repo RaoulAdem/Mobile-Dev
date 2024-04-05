@@ -192,8 +192,12 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, ProfileActivity::class.java))
                     return@setOnItemSelectedListener true
                 }
+                R.id.esib -> {
+                    startActivity(Intent(this, ESIBActivity::class.java))
+                    return@setOnItemSelectedListener true
+                }
+                else -> false
             }
-            false
         }
     }
     override fun onResume() {

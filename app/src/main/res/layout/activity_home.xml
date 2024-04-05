@@ -121,7 +121,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation"
         app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white">
+        app:itemTextColor="@color/white"
+        app:itemActiveIndicatorStyle="@android:color/transparent">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

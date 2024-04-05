@@ -3,9 +3,16 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/baseline_home_filled_24"
-        android:title="" />
+        android:title=""
+        android:checkable="true" />
+    <item
+        android:id="@+id/esib"
+        android:icon="@drawable/baseline_location_pin_24"
+        android:title=""
+        android:checkable="true" />
     <item
         android:id="@+id/profile"
         android:icon="@drawable/baseline_person_24"
-        android:title="" />
+        android:title=""
+        android:checkable="true" />
 </menu>

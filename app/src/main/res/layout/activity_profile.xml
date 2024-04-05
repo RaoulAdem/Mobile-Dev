@@ -127,13 +127,14 @@
         android:layout_height="60dp"
         android:background="?android:attr/colorPrimary"
         android:layout_alignParentBottom="true"
+        app:menu="@menu/navigation"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:itemActiveIndicatorStyle="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/navigation"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white">
+        app:layout_constraintStart_toStartOf="parent">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
