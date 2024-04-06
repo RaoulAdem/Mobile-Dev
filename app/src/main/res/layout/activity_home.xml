@@ -12,7 +12,6 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -61,10 +60,55 @@
         android:textSize="20sp"
         android:gravity="center"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+    </TextView>
+
+    <SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeInfo"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search here"
+        android:background="@color/white">
+
+    </SearchView>
+    
+    <SeekBar
+        android:id="@+id/age_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:valueFrom="0"
+        android:valueTo="100"
+        android:stepSize="1"
+        android:thumbTint="@color/white"
+       android:progressTint="@color/white"
+        android:progressBackgroundTint="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar">
+
+    </SeekBar>
+
+    <TextView
+        android:id="@+id/age_slider_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Select an Age"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/age_slider">
 
     </TextView>
 
@@ -73,10 +117,9 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:background="@color/gray"
-        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeInfo">
+        app:layout_constraintTop_toBottomOf="@+id/age_slider_info">
 
     </ExpandableListView>
 
@@ -88,7 +131,7 @@
         android:textOn="Be displayed"
         android:textColor="@color/yellow"
         android:backgroundTint="@color/black_gray"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/expandableListView">

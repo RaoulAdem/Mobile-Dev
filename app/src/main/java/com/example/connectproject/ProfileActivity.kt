@@ -359,6 +359,7 @@ class ProfileActivity : AppCompatActivity() {
                                 titles.add(fullnameFavorites)
                                 adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userUids, storageReference)
                                 expandableListView.setAdapter(adapter)
+                                binding.notifs.text = "Number of favorites: $titles.size.toString()"
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 Toast.makeText(this@ProfileActivity, "Error fetching favorites!", Toast.LENGTH_SHORT).show()

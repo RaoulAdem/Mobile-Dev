@@ -41,7 +41,7 @@
         android:id="@+id/changeMail"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="Change mail"
         android:textColor="@color/white"
         android:backgroundTint="@color/black_gray"
@@ -55,7 +55,7 @@
         android:id="@+id/changePassword"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="Change password"
         android:textColor="@color/white"
         android:backgroundTint="@color/black_gray"
@@ -69,7 +69,7 @@
         android:id="@+id/changePhone"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:text="Change phone number"
         android:textColor="@color/white"
         android:backgroundTint="@color/black_gray"
@@ -79,6 +79,21 @@
 
     </Button>
 
+    <TextView
+        android:id="@+id/notifs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="You have 0 favorites"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changePhone">
+
+    </TextView>
+
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:background="@color/gray"
@@ -87,7 +102,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changePhone">
+        app:layout_constraintTop_toBottomOf="@+id/notifs">
 
     </ExpandableListView>
 

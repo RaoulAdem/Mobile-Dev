@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ExpandableListAdapter
+import android.widget.SearchView
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -29,6 +31,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storageReference: StorageReference
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var navigationView: BottomNavigationView
+    private lateinit var searchText: String
+    private var minAge: Int = 0
+    private var maxAge: Int = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -81,39 +86,38 @@ class MainActivity : AppCompatActivity() {
                 })
         }
 
-        //list users
-        database.child("users").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    val titles = mutableListOf<String>()
-                    val listData = HashMap<String, List<String>>()
-                    val userUids = mutableListOf<String>()
-                    val isTeacherCurrentUser = dataSnapshot.child(currentUser!!.uid).child("teacher").getValue(Boolean::class.java)
-                    for (userSnapshot in dataSnapshot.children) {
-                        val isTeacher = userSnapshot.child("teacher").getValue<Boolean>() ?: false
-                        if (isTeacherCurrentUser != isTeacher) {
-                            val firstname = userSnapshot.child("firstName").getValue<String>()?.capitalize() ?: ""
-                            val lastname = userSnapshot.child("lastName").getValue<String>()?.toUpperCase() ?: ""
-                            val fullName = "$firstname $lastname"
-                            val useruid = userSnapshot.key ?: ""
-                            userUids.add(useruid)
-                            val userOptions = listOf("Add to favorite")
-                            val beDisplayed = userSnapshot.child("beDisplayed").getValue<Boolean>() ?: false
-                            if (beDisplayed) {
-                                titles.add(fullName)
-                                listData[fullName] = userOptions
-                            }
-                        }
-                    }
-                    adapter = ExpandableListAdapter(this@MainActivity, titles, listData, userUids, storageReference)
-                    expandableListView.setAdapter(adapter)
-                }
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Perform search operation here
+                return false
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(this@MainActivity, "Error fetching users!", Toast.LENGTH_SHORT).show()
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchText = newText ?: ""
+                refreshData()
+                return false
             }
         })
+        searchText = ""
+
+        binding.ageSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.ageSliderInfo.text = "Age: $progress"
+                minAge = progress
+                refreshData()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+        minAge = sharedPreferences.getInt("minAge", 0)
+        maxAge = sharedPreferences.getInt("maxAge", 100)
+
+        //list users
+        refreshData()
 
         //when we click
         expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
@@ -215,7 +219,48 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         //save the state
         val editor = sharedPreferences.edit()
+        editor.putInt("minAge", minAge)
+        editor.putInt("maxAge", maxAge)
         editor.putBoolean("toggleButtonStateDisplayed", binding.beDisplayed.isChecked)
         editor.apply()
+    }
+
+    private fun refreshData() {
+        database.child("users").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val titles = mutableListOf<String>()
+                    val listData = HashMap<String, List<String>>()
+                    val userUids = mutableListOf<String>()
+                    val currentUser = FirebaseAuth.getInstance().currentUser
+                    val isTeacherCurrentUser = dataSnapshot.child(currentUser!!.uid).child("teacher").getValue(Boolean::class.java)
+                    for (userSnapshot in dataSnapshot.children) {
+                        val isTeacher = userSnapshot.child("teacher").getValue<Boolean>() ?: false
+                        if (isTeacherCurrentUser != isTeacher) {
+                            val firstname = userSnapshot.child("firstName").getValue<String>()?.capitalize() ?: ""
+                            val lastname = userSnapshot.child("lastName").getValue<String>()?.toUpperCase() ?: ""
+                            val fullName = "$firstname $lastname"
+                            val userUid = userSnapshot.key ?: ""
+                            val ageText = userSnapshot.child("age").getValue<String>()?: ""
+                            val age = ageText.toInt()
+                            if (fullName.contains(searchText, ignoreCase = true) && age in minAge..maxAge)  {
+                                val beDisplayed = userSnapshot.child("beDisplayed").getValue<Boolean>() ?: false
+                                if (beDisplayed) {
+                                    titles.add(fullName)
+                                    listData[fullName] = listOf("Add to favorite")
+                                    userUids.add(userUid)
+                                }
+                            }
+                        }
+                    }
+                    adapter = ExpandableListAdapter(this@MainActivity, titles, listData, userUids, storageReference)
+                    binding.expandableListView.setAdapter(adapter)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Error fetching users!", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
