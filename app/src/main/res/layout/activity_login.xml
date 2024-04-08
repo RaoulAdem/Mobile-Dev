@@ -7,7 +7,7 @@
     android:background="?android:attr/colorPrimary"
     tools:context=".LoginActivity">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:id="@+id/loginImage"
@@ -20,7 +20,7 @@
         app:strokeWidth="10dp"
         app:strokeColor="@android:color/darker_gray">
 
-    </ImageView>
+    </de.hdodenhof.circleimageview.CircleImageView>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginEmailLayout"
@@ -71,7 +71,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:backgroundTint="@color/black_gray"
+        android:background="@drawable/rounded_corner"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:id="@+id/loginButton"

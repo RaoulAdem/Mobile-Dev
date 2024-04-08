@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var navigationView: BottomNavigationView
     private lateinit var searchText: String
-    private var minAge: Int = 0
-    private var maxAge: Int = 100
+    private var minYear: Int = 0
+    private var maxYear: Int = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -69,14 +69,14 @@ class MainActivity : AppCompatActivity() {
                         val firstName = dataSnapshot.child("firstName").value.toString().capitalize()
                         val lastName = dataSnapshot.child("lastName").value.toString().uppercase()
                         val email = dataSnapshot.child("email").value.toString()
-                        val age = dataSnapshot.child("age").value.toString()
+                        val years = dataSnapshot.child("years").value.toString()
                         val fullName = "$firstName $lastName"
                         binding.homeInfo.text = "Welcome back, $fullName!"
                         binding.cardInfo.text = """
                             Name: $fullName
                             Email: $email
-                            Age: $age
-                            You can change them in the profile section!
+                            $years years of experience.
+                            You can change them in the profile section.
                         """.trimIndent()
                     }
 
@@ -100,10 +100,10 @@ class MainActivity : AppCompatActivity() {
         })
         searchText = ""
 
-        binding.ageSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.yearsSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.ageSliderInfo.text = "Age: $progress"
-                minAge = progress
+                binding.yearsSliderInfo.text = "You select 0 to $progress years of experience"
+                minYear = progress
                 refreshData()
             }
 
@@ -113,8 +113,8 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
             }
         })
-        minAge = sharedPreferences.getInt("minAge", 0)
-        maxAge = sharedPreferences.getInt("maxAge", 100)
+        minYear = sharedPreferences.getInt("minYear", 0)
+        maxYear = sharedPreferences.getInt("maxYear", 60)
 
         //list users
         refreshData()
@@ -181,10 +181,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.beDisplayed.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                binding.beDisplayedInfo.text = "You will be listed"
+                binding.beDisplayedInfo.text = "You will be listed."
                 database.child("users").child(currentUser?.uid ?: "").child("beDisplayed").setValue(true)
             } else {
-                binding.beDisplayedInfo.text = "You will no longer be listed"
+                binding.beDisplayedInfo.text = "You will no longer be listed."
                 database.child("users").child(currentUser?.uid ?: "").child("beDisplayed").setValue(false)
             }
         }
@@ -219,8 +219,8 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         //save the state
         val editor = sharedPreferences.edit()
-        editor.putInt("minAge", minAge)
-        editor.putInt("maxAge", maxAge)
+        editor.putInt("minYear", minYear)
+        editor.putInt("maxYear", maxYear)
         editor.putBoolean("toggleButtonStateDisplayed", binding.beDisplayed.isChecked)
         editor.apply()
     }
@@ -241,13 +241,13 @@ class MainActivity : AppCompatActivity() {
                             val lastname = userSnapshot.child("lastName").getValue<String>()?.toUpperCase() ?: ""
                             val fullName = "$firstname $lastname"
                             val userUid = userSnapshot.key ?: ""
-                            val ageText = userSnapshot.child("age").getValue<String>()?: ""
-                            val age = ageText.toInt()
-                            if (fullName.contains(searchText, ignoreCase = true) && age in minAge..maxAge)  {
+                            val yearsText = userSnapshot.child("years").getValue<String>()?: ""
+                            val years = yearsText.toInt()
+                            if (fullName.contains(searchText, ignoreCase = true) && years in minYear..maxYear)  {
                                 val beDisplayed = userSnapshot.child("beDisplayed").getValue<Boolean>() ?: false
                                 if (beDisplayed) {
                                     titles.add(fullName)
-                                    listData[fullName] = listOf("Add to favorite")
+                                    listData[fullName] = listOf("Add to favorite.")
                                     userUids.add(userUid)
                                 }
                             }

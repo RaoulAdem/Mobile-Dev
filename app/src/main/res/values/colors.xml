@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="my_light_primary">#686868</color>
-    <color name="my_dark_primary">#292929</color>
+    <color name="my_light_primary">#E7E8D1</color>
+    <color name="my_dark_primary">#1B1B1B</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray">#9E9E9E</color>
-    <color name="black_gray">#5b5b5b</color>
+    <color name="mutud_teal">#A7BEAE</color>
+    <color name="terracotta_red">#B85042</color>
+    <color name="green">#8BC34A</color>
     <color name="black">#FF000000</color>
-    <color name="yellow">#FFFC00</color>
     <color name="light_yellow">#70FFFC00</color>
     <color name="red">#C8180B</color>
 </resources>

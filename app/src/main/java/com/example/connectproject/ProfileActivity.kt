@@ -79,7 +79,7 @@ class ProfileActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         Toast.makeText(
                             this,
-                            "Image upload succesful",
+                            "Image upload successful",
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -116,7 +116,6 @@ class ProfileActivity : AppCompatActivity() {
                 })
         }
 
-        //add email format check & red edittext & CHECK ISSUE
         binding.changeMail.setOnClickListener {
             val view = LayoutInflater.from(this).inflate(R.layout.dialog_update_email, null)
             val oldEmail = view.findViewById<EditText>(R.id.oldEmail)
@@ -134,20 +133,38 @@ class ProfileActivity : AppCompatActivity() {
                 if (olde.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "Current Email cannot be empty",
+                        "Current email cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
                     oldEmail.error = "Please enter old mail"
                     return@setOnClickListener
                 }
-
                 if (newe.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "New Email cannot be empty",
+                        "New email cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
                     newEmail.error = "Please enter new mail"
+                    return@setOnClickListener
+                }
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newe).matches()) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Invalid email format",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    newEmail.error = "Please enter new mail"
+                    return@setOnClickListener
+                }
+                if (newe == olde) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "New email and old email cannot be the same",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    oldEmail.error = "Please enter old email"
+                    newEmail.error = "Please enter new email"
                     return@setOnClickListener
                 }
                 val ref = database.child("users").child(currentUser?.uid ?: "").child("email")
@@ -161,7 +178,7 @@ class ProfileActivity : AppCompatActivity() {
                                 dialog.dismiss()
                                 Toast.makeText(
                                     this@ProfileActivity,
-                                    "Changed Mail",
+                                    "Email changed",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -176,7 +193,6 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        //add password format check & red edittext
         binding.changePassword.setOnClickListener {
             val view = LayoutInflater.from(this).inflate(R.layout.dialog_update_password, null)
             val oldpassword = view.findViewById<EditText>(R.id.oldPassword)
@@ -192,7 +208,7 @@ class ProfileActivity : AppCompatActivity() {
                 if (oldp.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "Current Password cant be empty",
+                        "Current password cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
                     oldpassword.error = "Please enter old password"
@@ -201,9 +217,28 @@ class ProfileActivity : AppCompatActivity() {
                 if (newp.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "New Password cant be empty",
+                        "New password cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
+                    newpassword.error = "Please enter new password"
+                    return@setOnClickListener
+                }
+                if (newp.length < 5) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Password is too short",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    newpassword.error = "Please enter new password"
+                    return@setOnClickListener
+                }
+                if (newp == oldp) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "New password and old password cannot be the same",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    oldpassword.error = "Please enter old password"
                     newpassword.error = "Please enter new password"
                     return@setOnClickListener
                 }
@@ -218,7 +253,7 @@ class ProfileActivity : AppCompatActivity() {
                                 dialog.dismiss()
                                 Toast.makeText(
                                     this@ProfileActivity,
-                                    "Changed Password",
+                                    "Password changed",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -248,7 +283,7 @@ class ProfileActivity : AppCompatActivity() {
                 if (oldp.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "Current phone number can't be empty",
+                        "Current phone number cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
                     oldphone.error = "Please enter phone number"
@@ -257,19 +292,9 @@ class ProfileActivity : AppCompatActivity() {
                 if (newp.isEmpty()) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "New phone number can't be empty",
+                        "New phone number cannot be empty",
                         Toast.LENGTH_LONG
                     ).show()
-                    newphone.error = "Please enter phone number"
-                    return@setOnClickListener
-                }
-                if (newp == oldp) {
-                    Toast.makeText(
-                        this@ProfileActivity,
-                        "New phone number and old phone number can't be the same",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    oldphone.error = "Please enter phone number"
                     newphone.error = "Please enter phone number"
                     return@setOnClickListener
                 }
@@ -277,7 +302,7 @@ class ProfileActivity : AppCompatActivity() {
                 if (ref.get().toString() == newp) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "New phone number and saved phone number can't be the same",
+                        "New phone number and old phone number cannot be the same",
                         Toast.LENGTH_LONG
                     ).show()
                     newphone.error = "Please enter new phone number"
@@ -287,7 +312,7 @@ class ProfileActivity : AppCompatActivity() {
                     if (snapshot.value.toString() != oldp) {
                         Toast.makeText(
                             this@ProfileActivity,
-                            "Old phone number is incorrect. Please enter the correct old phone number",
+                            "Old phone number is incorrect",
                             Toast.LENGTH_LONG
                         ).show()
                         oldphone.error = "Please enter correct old phone number"
@@ -308,14 +333,13 @@ class ProfileActivity : AppCompatActivity() {
                                 dialog.dismiss()
                                 Toast.makeText(
                                     this@ProfileActivity,
-                                    "Number changed!",
+                                    "Phone number changed",
                                     Toast.LENGTH_LONG
                                 ).show()
                             } else {
-                                // Handle database write error
                                 Toast.makeText(
                                     this@ProfileActivity,
-                                    "Error updating phone number",
+                                    "Failed",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -352,14 +376,14 @@ class ProfileActivity : AppCompatActivity() {
                         favoriteRef.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(favoriteSnapshot: DataSnapshot) {
                                 if (favoriteSnapshot.exists()) {
-                                    listData[fullnameFavorites] = listOf("Do actions")
+                                    listData[fullnameFavorites] = listOf("Click for more actions!")
                                 } else {
-                                    listData[fullnameFavorites] = listOf("Remove from favorites")
+                                    listData[fullnameFavorites] = listOf("Remove from favorites.")
                                 }
                                 titles.add(fullnameFavorites)
                                 adapter = ExpandableListAdapter(this@ProfileActivity, titles, listData, userUids, storageReference)
                                 expandableListView.setAdapter(adapter)
-                                binding.notifs.text = "Number of favorites: $titles.size.toString()"
+                                binding.notifs.text = "You have a total of ${titles.size.toString()} users as favorites."
                             }
                             override fun onCancelled(error: DatabaseError) {
                                 Toast.makeText(this@ProfileActivity, "Error fetching favorites!", Toast.LENGTH_SHORT).show()
@@ -380,7 +404,7 @@ class ProfileActivity : AppCompatActivity() {
             val selectedChild = adapter.getChild(groupPosition, childPosition) as String
             val userRef = database.child("users").child(currentUser?.uid ?: "")
             val uidRef = database.child(selectedTitle)
-            if (selectedChild == "Remove from favorites") {
+            if (selectedChild == "Remove from favorites.") {
                 userRef.get().addOnSuccessListener { dataSnapshot ->
                     favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
                     favorites.remove(selectedTitle)
@@ -438,7 +462,7 @@ class ProfileActivity : AppCompatActivity() {
                         ref2.get().addOnSuccessListener { dataSnapshot2 ->
                             val dial = dataSnapshot2.getValue(String::class.java)
                             val dialIntent = Intent(Intent.ACTION_DIAL)
-                            dialIntent.data = Uri.parse("tel:" + dial)
+                            dialIntent.data = Uri.parse("tel: $dial")
                             startActivity(dialIntent)
                             dialog.dismiss()
                         }

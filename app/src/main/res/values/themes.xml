@@ -7,5 +7,12 @@
     <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/my_light_primary</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="android:textAppearance">@style/SplashText</item>
+    </style>
+
+    <style name="SplashText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:text">eeee</item>
+        <item name="android:layout_gravity">bottom</item>
     </style>
 </resources>

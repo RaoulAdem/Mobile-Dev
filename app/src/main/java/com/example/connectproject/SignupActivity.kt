@@ -2,7 +2,6 @@ package com.example.connectproject
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +20,7 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var signupLastname: EditText
     private lateinit var signupEmail: EditText
     private lateinit var signupPassword: EditText
-    private lateinit var signupAge: EditText
+    private lateinit var signupYears: EditText
     private lateinit var signupTeacher: ToggleButton
     private lateinit var signupPhone: EditText
 
@@ -39,7 +38,7 @@ class SignupActivity : AppCompatActivity() {
         signupLastname = findViewById(R.id.signupLastname)
         signupEmail = findViewById(R.id.signupEmail)
         signupPassword = findViewById(R.id.signupPassword)
-        signupAge = findViewById(R.id.signupAge)
+        signupYears = findViewById(R.id.signupYears)
         signupTeacher = findViewById(R.id.signupTeacher)
         signupPhone = findViewById(R.id.signupPhone)
 
@@ -48,10 +47,10 @@ class SignupActivity : AppCompatActivity() {
             val lastname = signupLastname.text.toString()
             val email = signupEmail.text.toString()
             val password = signupPassword.text.toString()
-            val age = signupAge.text.toString()
+            val years = signupYears.text.toString()
             val phone = signupPhone.text.toString()
-            if (validateForm(firstname, lastname, email, password, age, phone)) {
-                saveUserData(firstname, lastname, email, password, age, phone)
+            if (validateForm(firstname, lastname, email, password, years, phone)) {
+                saveUserData(firstname, lastname, email, password, years, phone)
             }
         }
 
@@ -61,7 +60,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateForm(firstname: String, lastname: String, email: String, password: String, age: String, phone: String): Boolean {
+    private fun validateForm(firstname: String, lastname: String, email: String, password: String, years: String, phone: String): Boolean {
         var valid = true
         if (firstname.isEmpty()) {
             signupFirstname.error = "Please enter firstname"
@@ -90,23 +89,26 @@ class SignupActivity : AppCompatActivity() {
         if (password.isEmpty()) {
             signupPassword.error = "Please enter password"
             valid = false
+        } else if (password.length<5) {
+            signupPassword.error = "Password is too short"
+            valid = false
         }
 
-        if (age.isEmpty()) {
-            signupAge.error = "Please enter age"
+        if (years.isEmpty()) {
+            signupYears.error = "Please enter years of experience"
             valid = false
         } else {
             try {
-                val age = age.toInt()
-                if (age <= 0) {
-                    signupAge.error = "Age must be greater than 0"
+                val years = years.toInt()
+                if (years < 0) {
+                    signupYears.error = "Years of experience must be at least equal to 0"
                     valid = false
-                } else if (age > 120) {
-                    signupAge.error = "Age seems unlikely, please enter a valid age"
+                } else if (years > 60) {
+                    signupYears.error = "Years of experience seems unlikely, please enter a valid one"
                     valid = false
                 }
             } catch (e: NumberFormatException) {
-                signupAge.error = "Invalid age format"
+                signupYears.error = "Invalid years of experience format"
                 valid = false
             }
         }
@@ -122,17 +124,17 @@ class SignupActivity : AppCompatActivity() {
     }
 
     //add toast messages
-    private fun saveUserData(firstname: String, lastname: String, email: String, password: String, age: String, phone: String) {
+    private fun saveUserData(firstname: String, lastname: String, email: String, password: String, years: String, phone: String) {
         teacher = signupTeacher.isChecked
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if (it.isSuccessful) {  // Check for successful task completion
+                if (it.isSuccessful) {
                     val userMap = UserData(
                         firstName = firstname,
                         lastName = lastname,
                         email = email,
                         password = password,
-                        age = age,
+                        years = years,
                         teacher = teacher,
                         phone = phone,
                         beListed = false
@@ -142,10 +144,6 @@ class SignupActivity : AppCompatActivity() {
                     database.child(firstname.capitalize() + " " + lastname.uppercase()).setValue(currentUser?.uid ?: " ")
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
-
-                } else {
-                    // Handle unsuccessful authentication (exception handling)
-                    Log.e("saveUserData", "Error creating user", it.exception)
                 }
             }
     }

@@ -20,7 +20,10 @@
             android:padding="4dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="10dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="@color/mutud_teal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/cardImage"
@@ -40,6 +43,7 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:gravity="center"
+                android:layout_gravity="center"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +60,6 @@
         android:id="@+id/homeInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:textSize="20sp"
         android:gravity="center"
         android:textStyle="bold"
@@ -72,65 +75,68 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/homeInfo"
         android:iconifiedByDefault="false"
         android:queryHint="Search here"
-        android:background="@color/white">
+        android:backgroundTint="@color/white"
+        android:background="@drawable/rounded_corner">
 
     </SearchView>
-    
-    <SeekBar
-        android:id="@+id/age_slider"
-        android:layout_width="0dp"
+
+    <TextView
+        android:id="@+id/years_slider_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:valueFrom="0"
-        android:valueTo="100"
-        android:stepSize="1"
-        android:thumbTint="@color/white"
-       android:progressTint="@color/white"
-        android:progressBackgroundTint="@color/gray"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Please select years of experience"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar">
 
-    </SeekBar>
-
-    <TextView
-        android:id="@+id/age_slider_info"
-        android:layout_width="match_parent"
+    </TextView>
+    
+    <SeekBar
+        android:id="@+id/years_slider"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:text="Select an Age"
+        android:layout_marginHorizontal="25dp"
+        android:valueFrom="0"
+        android:valueTo="100"
+        android:stepSize="1"
+        android:thumbTint="@color/terracotta_red"
+       android:progressTint="@color/white"
+        android:progressBackgroundTint="@color/mutud_teal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/age_slider">
+        app:layout_constraintTop_toBottomOf="@+id/years_slider_info">
 
-    </TextView>
+    </SeekBar>
 
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:background="@color/gray"
+        android:background="@drawable/rounded_corner_adapter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/age_slider_info">
+        app:layout_constraintTop_toBottomOf="@+id/years_slider">
 
     </ExpandableListView>
 
     <ToggleButton
         android:layout_width="275dp"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:id="@+id/beDisplayed"
-        android:textOff="Nop"
+        android:textAllCaps="false"
+        android:textOff="Do not be displayed"
         android:textOn="Be displayed"
-        android:textColor="@color/yellow"
-        android:backgroundTint="@color/black_gray"
+        android:textColor="@color/white"
+        android:background="@drawable/rounded_corner"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -142,8 +148,9 @@
         android:id="@+id/beDisplayedInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You will by default not be listed"
+        android:text="You will not be listed by default."
         android:textSize="15sp"
+        android:textStyle="bold"
         android:gravity="center"
         android:layout_marginTop="2dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -156,15 +163,15 @@
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="?android:attr/colorPrimary"
+        android:background="@color/mutud_teal"
         android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemIconTint="?android:attr/colorPrimary"
+        app:itemTextColor="?android:attr/colorPrimary"
         app:itemActiveIndicatorStyle="@android:color/transparent">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

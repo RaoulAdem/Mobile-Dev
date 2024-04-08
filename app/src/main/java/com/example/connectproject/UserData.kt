@@ -5,7 +5,7 @@ data class UserData (
     val lastName: String,
     val email: String,
     val password: String,
-    val age: String,
+    val years: String,
     val teacher: Boolean,
     val phone: String,
     val beListed: Boolean
