@@ -37,6 +37,8 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
+                        binding.loginEmail.error = "Incorrect email"
+                        binding.loginPassword.error = "Incorrect password"
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                         Log.e("LoginActivity", it.exception.toString())
                     }

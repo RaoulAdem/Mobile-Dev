@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
             android:orientation="horizontal"
-            android:background="@drawable/rounded_corner"
+            android:background="@drawable/rounded_corner_adapter"
             android:backgroundTint="@color/mutud_teal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -45,7 +45,6 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:textStyle="bold"
-                android:layout_marginTop="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardImage">
@@ -163,7 +162,8 @@
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/mutud_teal"
+        android:background="@drawable/rounded_corner_nav"
+        android:backgroundTint="@color/mutud_teal"
         android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

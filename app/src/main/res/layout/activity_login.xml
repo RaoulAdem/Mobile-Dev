@@ -71,7 +71,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:background="@drawable/rounded_corner"
+        android:backgroundTint="@color/terracotta_red"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:id="@+id/loginButton"
@@ -95,6 +95,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loginButton">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="from \n Raoul EL Adem \n Jean-paul Aboujaoude"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupRedirect">
 
     </TextView>
 
