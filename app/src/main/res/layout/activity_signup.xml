@@ -7,7 +7,7 @@
     android:background="?android:attr/colorPrimary"
     tools:context=".SignupActivity">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:id="@+id/signupImage"
@@ -18,121 +18,179 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeWidth="10dp"
-        app:strokeColor="@android:color/darker_gray"
-        app:shapeAppearanceOverlay="@style/circleImageView">
+        app:strokeColor="@android:color/darker_gray">
 
-    </ImageView>
+    </de.hdodenhof.circleimageview.CircleImageView>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupFirstnameLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/signupFirstname"
-        android:hint="@string/firstname"
-        android:imeOptions="actionNext"
-        android:padding="12dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signupImage">
 
-    </EditText>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupFirstname"
+            android:hint="First name"
+            android:imeOptions="actionNext"
+            android:padding="12dp">
 
-    <EditText
+        </EditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupLastnameLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/signupLastname"
-        android:hint="@string/lastname"
-        android:imeOptions="actionNext"
-        android:padding="12dp"
         android:layout_marginTop="20dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupFirstname">
+        app:layout_constraintTop_toBottomOf="@id/signupFirstnameLayout">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupLastname"
+            android:hint="Last name"
+            android:imeOptions="actionNext"
+            android:padding="12dp">
 
-    </EditText>
+        </EditText>
 
-    <EditText
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupEmailLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/signupEmail"
-        android:hint="@string/email"
-        android:imeOptions="actionNext"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
         android:layout_marginTop="20dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupLastname">
+        app:layout_constraintTop_toBottomOf="@id/signupLastnameLayout">
 
-    </EditText>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupEmail"
+            android:hint="Email"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
+            android:padding="12dp">
 
-    <EditText
+        </EditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/signupPassword"
-        android:hint="@string/password"
-        android:imeOptions="actionNext"
-        android:inputType="textPassword"
-        android:padding="12dp"
         android:layout_marginTop="20dp"
+        app:passwordToggleEnabled="true"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupEmail">
+        app:layout_constraintTop_toBottomOf="@id/signupEmailLayout">
 
-    </EditText>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupPassword"
+            android:hint="Password"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword"
+            android:padding="12dp">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:id="@+id/signupAge"
-        android:hint="@string/age"
-        android:inputType="number"
-        android:digits="0123456789"
-        android:padding="12dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupPassword">
+        </EditText>
 
-    </EditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ToggleButton
         android:layout_width="275dp"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:id="@+id/signupTeacher"
         android:textOff="Student"
         android:textOn="Teacher"
+        android:textColor="@color/white"
+        android:background="@drawable/rounded_corner"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupAge">
+        app:layout_constraintTop_toBottomOf="@id/signupPasswordLayout">
 
     </ToggleButton>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupYearsLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:id="@+id/signupPhone"
-        android:hint="@string/phone"
-        android:inputType="number"
-        android:digits="0123456789"
-        android:padding="12dp"
         android:layout_marginTop="20dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signupTeacher">
 
-    </EditText>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupYears"
+            android:hint="Years of experience"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:padding="12dp">
+
+        </EditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signupPhoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupYearsLayout">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signupPhone"
+            android:hint="Phone number"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:padding="12dp">
+
+        </EditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:id="@+id/signupButton"
-        android:text="@string/signup"
+        android:text="Sign up"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/terracotta_red"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupPhone">
+        app:layout_constraintTop_toBottomOf="@id/signupPhoneLayout">
 
     </Button>
 

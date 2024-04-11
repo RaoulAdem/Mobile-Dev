@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update Password"
+        android:text="Update Phone number"
         android:textSize="20sp"
         android:gravity="center"
         android:textStyle="bold" />
@@ -21,16 +21,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:passwordToggleEnabled="true"
         app:boxStrokeColor="@color/black"
         app:hintTextColor="@color/black">
 
         <EditText
-            android:id="@+id/oldPassword"
+            android:id="@+id/oldPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Old password"
-            android:inputType="textPassword"/>
+            android:hint="Old phone number"
+            android:inputType="number"
+            android:digits="0123456789"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -38,26 +38,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:passwordToggleEnabled="true"
         app:boxStrokeColor="@color/black"
         app:hintTextColor="@color/black">
 
         <EditText
-            android:id="@+id/newPassword"
+            android:id="@+id/newPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New password"
-            android:inputType="textPassword"/>
+            android:hint="New phone number"
+            android:inputType="number"
+            android:digits="0123456789"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:backgroundTint="@color/terracotta_red"
-        android:id="@+id/updatePasswordButton"
+        android:id="@+id/updatePhoneButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:text="Update password"
+        android:text="Update phone number"
         android:textColor="@color/white"/>
 
 </LinearLayout>

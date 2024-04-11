@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/onboarding_background">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnSkip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skip"
+            android:textColor="@color/onboarding_text"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="16dp"
+            android:visibility="visible"
+            android:onClick="onSkipButtonClick"/>
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:textColor="@color/onboarding_text"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="16dp"
+            android:onClick="onNextButtonClick"/>
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="@color/onboarding_text"
+            android:background="@android:color/transparent"
+            android:layout_marginEnd="16dp"
+            android:onClick="onBackButtonClick"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
+</RelativeLayout>
