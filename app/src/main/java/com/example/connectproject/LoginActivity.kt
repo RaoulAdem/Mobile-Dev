@@ -16,18 +16,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Base_Theme_ConnectProject)
         super.onCreate(savedInstanceState)
-        //for loading app
         installSplashScreen()
-        //
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //initialize firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
-        //when clicking the login button
         binding.loginButton.setOnClickListener {
             val loginUsername = binding.loginEmail.text.toString()
             val loginPassword = binding.loginPassword.text.toString()
@@ -48,7 +43,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        //when clicking the redirect text
         binding.signupRedirect.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)

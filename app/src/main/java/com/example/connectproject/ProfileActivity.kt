@@ -44,7 +44,6 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         firebaseAuth = FirebaseAuth.getInstance()
         storageReference = FirebaseStorage.getInstance().getReference("UserImages")
         database = Firebase.database.reference
@@ -510,8 +509,8 @@ class ProfileActivity : AppCompatActivity() {
                     startActivity(Intent(this, MainActivity::class.java))
                     return@setOnItemSelectedListener true
                 }
-                R.id.esib -> {
-                    startActivity(Intent(this, ESIBActivity::class.java))
+                R.id.chat -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
                     return@setOnItemSelectedListener true
                 }
             }

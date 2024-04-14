@@ -15,7 +15,6 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var database: DatabaseReference
-
     private lateinit var signupFirstname: EditText
     private lateinit var signupLastname: EditText
     private lateinit var signupEmail: EditText
@@ -23,17 +22,14 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var signupYears: EditText
     private lateinit var signupTeacher: ToggleButton
     private lateinit var signupPhone: EditText
-
     private var teacher: Boolean = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         firebaseAuth = FirebaseAuth.getInstance()
         database = Firebase.database.reference
-
         signupFirstname = findViewById(R.id.signupFirstname)
         signupLastname = findViewById(R.id.signupLastname)
         signupEmail = findViewById(R.id.signupEmail)

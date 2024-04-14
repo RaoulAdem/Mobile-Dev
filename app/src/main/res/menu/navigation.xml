@@ -6,8 +6,8 @@
         android:title=""
         android:checkable="true" />
     <item
-        android:id="@+id/esib"
-        android:icon="@drawable/baseline_location_pin_24"
+        android:id="@+id/chat"
+        android:icon="@drawable/baseline_chat_24"
         android:title=""
         android:checkable="true" />
     <item
