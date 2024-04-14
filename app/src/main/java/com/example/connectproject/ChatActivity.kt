@@ -1,9 +1,10 @@
 package com.example.connectproject
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.connectproject.databinding.ActivityChatBinding
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
@@ -12,23 +13,16 @@ import kotlinx.coroutines.launch
 
 //https://ai.google.dev/tutorials/get_started_android#kotlin
 class ChatActivity : AppCompatActivity() {
-    lateinit var editTextInput: EditText
-    lateinit var editTextOutput: EditText
-
-    lateinit var chat: Chat
-
-    var stringBuilder: StringBuilder = java.lang.StringBuilder()
+    private lateinit var binding: ActivityChatBinding
+    private lateinit var chat: Chat
+    private var stringBuilder: StringBuilder = java.lang.StringBuilder()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
-
-        editTextInput = findViewById(R.id.editTextInput)
-        editTextOutput = findViewById(R.id.editTextOutput)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val generativeModel = GenerativeModel(
-            // For text-only input, use the gemini-pro model
             modelName = "gemini-pro",
-            // Access your API key as a Build Configuration variable (see "Set up your API key" above)
             apiKey = "AIzaSyCQ2q61-SJDtC6GNOZWTYE1HjaAf2hkJRQ"
         )
 
@@ -41,18 +35,32 @@ class ChatActivity : AppCompatActivity() {
         stringBuilder.append("Hello, I have 2 dogs in my house.\n")
         stringBuilder.append("Great to meet you. What would you like to know?\n")
 
-        editTextOutput.setText(stringBuilder.toString())
+        binding.editTextOutput.text = stringBuilder.toString()
+
+        binding.navigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    return@setOnItemSelectedListener true
+                }
+                R.id.chat -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
+                    return@setOnItemSelectedListener true
+                }
+                else -> false
+            }
+        }
     }
 
-    public fun buttonSendChat(view: View) {
-        stringBuilder.append(editTextInput.text.toString() + "\n")
+    fun buttonSendChat(view: View) {
+        stringBuilder.append(binding.editTextInput.text.toString() + "\n")
         MainScope().launch {
-            val result = chat.sendMessage(editTextInput.text.toString())
+            val result = chat.sendMessage(binding.editTextInput.text.toString())
             stringBuilder.append(result.text + "\n")
 
-            editTextOutput.setText(stringBuilder.toString())
+            binding.editTextOutput.text = stringBuilder.toString()
 
-            editTextInput.setText("") //to reset text when sending
+            binding.editTextInput.setText("") //to reset text when sending
         }
     }
 }

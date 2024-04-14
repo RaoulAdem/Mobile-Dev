@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -124,6 +126,7 @@ class ProfileActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setView(view)
             val dialog = builder.create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
             updateEmailButton.setOnClickListener {
                 val olde = oldEmail.text.toString()
@@ -200,6 +203,7 @@ class ProfileActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setView(view)
             val dialog = builder.create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
             updatepassword.setOnClickListener {
                 val oldp = oldpassword.text.toString()
@@ -275,6 +279,7 @@ class ProfileActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setView(view)
             val dialog = builder.create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show()
             updatephone.setOnClickListener {
                 val oldp = oldphone.text.toString()
@@ -431,6 +436,7 @@ class ProfileActivity : AppCompatActivity() {
                 val builder = AlertDialog.Builder(this)
                 builder.setView(view)
                 val dialog = builder.create()
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.show()
                 removeFavorites.setOnClickListener {
                     userRef.get().addOnSuccessListener { dataSnapshot ->
@@ -461,7 +467,7 @@ class ProfileActivity : AppCompatActivity() {
                         ref2.get().addOnSuccessListener { dataSnapshot2 ->
                             val dial = dataSnapshot2.getValue(String::class.java)
                             val dialIntent = Intent(Intent.ACTION_DIAL)
-                            dialIntent.data = Uri.parse("tel: $dial")
+                            dialIntent.data = Uri.parse("tel: +961$dial")
                             startActivity(dialIntent)
                             dialog.dismiss()
                         }
