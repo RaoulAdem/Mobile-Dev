@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ExpandableListAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -87,6 +88,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
+        //image
         currentUser?.let { user ->
             val profileRef = storageReference.child(user.uid)
             profileRef.downloadUrl.addOnSuccessListener { url ->
@@ -101,6 +103,26 @@ class ProfileActivity : AppCompatActivity() {
                 }
         }
 
+        //profile info
+        currentUser?.let { user ->
+            database.child("users").child(user.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val firstName = dataSnapshot.child("firstName").value.toString().lowercase()
+                        val lastName = dataSnapshot.child("lastName").value.toString().lowercase()
+                        val fullName = "$firstName $lastName"
+                        binding.cardInfo.text = """
+                            @$fullName
+                            Click on your profile picture
+                            to change it.
+                        """.trimIndent()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        }
         currentUser?.let { user ->
             database.child("users").child(user.uid)
                 .addValueEventListener(object : ValueEventListener {
@@ -440,21 +462,33 @@ class ProfileActivity : AppCompatActivity() {
                 dialog.show()
                 removeFavorites.setOnClickListener {
                     userRef.get().addOnSuccessListener { dataSnapshot ->
-                        favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
-                        favorites.remove(selectedTitle)
-                        userRef.child("favorites").setValue(favorites).addOnSuccessListener {
-                            Toast.makeText(
-                                applicationContext,
-                                "Removed from favorites: $selectedTitle",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
-                            val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
-                            val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
-                            database.child("favorites").child(fullName).setValue(favorites)
-                            dialog.dismiss()
-                        }.addOnFailureListener {
-                            Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                        val view2 = LayoutInflater.from(this).inflate(R.layout.dialog_remove_favorites, null)
+                        val removeFavorites2 = view2.findViewById<Button>(R.id.removeFavorites)
+                        val textConfirmation = view2.findViewById<TextView>(R.id.textConfirmation)
+                        textConfirmation.text = "Are you sure you want to remove \n $selectedTitle \n from your favorites? \n Keep in mind that this user has also added you \n to their list of favorites."
+                        val builder2 = AlertDialog.Builder(this)
+                        builder2.setView(view2)
+                        val dialog2 = builder2.create()
+                        dialog2.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        dialog2.show()
+                        removeFavorites2.setOnClickListener {
+                            favorites = dataSnapshot.child("favorites").getValue<List<String>>()?.toMutableList() ?: mutableListOf()
+                            favorites.remove(selectedTitle)
+                            userRef.child("favorites").setValue(favorites).addOnSuccessListener {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Removed from favorites: $selectedTitle",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val firstName = dataSnapshot.child("firstName").getValue(String::class.java)
+                                val lastName = dataSnapshot.child("lastName").getValue(String::class.java)
+                                val fullName = "${firstName?.capitalize()} ${lastName?.uppercase()}"
+                                database.child("favorites").child(fullName).setValue(favorites)
+                                dialog2.dismiss()
+                            }.addOnFailureListener {
+                                Toast.makeText(applicationContext, "Error updating user's favorites", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }.addOnFailureListener {
                         Toast.makeText(applicationContext, "Error fetching user data", Toast.LENGTH_SHORT).show()
@@ -491,17 +525,6 @@ class ProfileActivity : AppCompatActivity() {
             true
         }
 
-        val isDarkModeEnabled = sharedPreferences.getBoolean("DarkMode", false)
-        binding.darkMode.isChecked = isDarkModeEnabled
-        binding.darkMode.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit().putBoolean("DarkMode", isChecked).apply()
-            if(isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
-
         binding.logoutButton.setOnClickListener {
             firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
@@ -521,6 +544,16 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
             false
+        }
+
+        binding.darkMode.isChecked = sharedPreferences.getBoolean("DarkMode", false)
+        binding.darkMode.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean("DarkMode", isChecked).apply()
+            if(isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
     }
 

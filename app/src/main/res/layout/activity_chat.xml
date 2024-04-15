@@ -8,11 +8,23 @@
     android:orientation="vertical"
     android:background="?android:attr/colorPrimary"
     tools:context=".ChatActivity">
+    <TextView
+        android:id="@+id/botInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Gus 1.0"
+        android:gravity="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/botLogo"
+        app:layout_constraintEnd_toStartOf="@+id/botLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/botLogo"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/botLogo"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:src="@drawable/bot"
         app:layout_constraintCircleRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,15 +34,23 @@
 
     </de.hdodenhof.circleimageview.CircleImageView>
 
-    <TextView
-        android:id="@+id/editTextOutput"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="552dp"
-        android:gravity="bottom|start"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextInput"
+        android:layout_height="600dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/botInfo"
+        app:layout_constraintVertical_bias="0">
+
+        <TextView
+            android:id="@+id/editTextOutput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:textSize="18sp" />
+    </ScrollView>
 
     <EditText
         android:id="@+id/editTextInput"

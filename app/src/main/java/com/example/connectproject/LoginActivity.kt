@@ -56,15 +56,4 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        //restore the state
-        val isDarkModeEnabled = sharedPreferences.getBoolean("DarkMode", false)
-//        if(isDarkModeEnabled) {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-//        } else {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//        }
-    }
 }

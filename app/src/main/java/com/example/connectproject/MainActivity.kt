@@ -69,13 +69,18 @@ class MainActivity : AppCompatActivity() {
                         val lastName = dataSnapshot.child("lastName").value.toString().uppercase()
                         val email = dataSnapshot.child("email").value.toString()
                         val years = dataSnapshot.child("years").value.toString()
+                        val teacher = dataSnapshot.child("teacher").getValue(Boolean::class.java)
+                        var text = "student"
+                        if (teacher == true) {
+                            text = "teacher"
+                        }
                         val fullName = "$firstName $lastName"
                         binding.homeInfo.text = "Welcome back, $fullName!"
                         binding.cardInfo.text = """
-                            Name: $fullName
-                            Email: $email
-                            $years years of experience.
-                            You can change them in the profile section.
+                            @$fullName
+                            $email
+                            You have $years years of experience
+                            as a $text.
                         """.trimIndent()
                     }
 
@@ -101,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.yearsSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.yearsSliderInfo.text = "You select 0 to $progress years of experience"
+                binding.yearsSliderInfo.text = "You selected 0 to $progress years of experience"
                 minYear = progress
                 refreshData()
             }
@@ -207,12 +212,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         //restore the state
         binding.beDisplayed.isChecked = sharedPreferences.getBoolean("toggleButtonStateDisplayed", false)
-//        val isDarkModeEnabled = sharedPreferences.getBoolean("DarkMode", false)
-//        if(isDarkModeEnabled) {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-//        } else {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//        }
     }
     override fun onPause() {
         super.onPause()
