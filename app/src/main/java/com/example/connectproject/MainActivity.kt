@@ -77,9 +77,8 @@ class MainActivity : AppCompatActivity() {
                         val fullName = "$firstName $lastName"
                         binding.homeInfo.text = "Welcome back, $fullName!"
                         binding.cardInfo.text = """
-                            @$fullName
                             $email
-                            You have $years years of experience
+                            $years years of experience
                             as a $text.
                         """.trimIndent()
                     }
